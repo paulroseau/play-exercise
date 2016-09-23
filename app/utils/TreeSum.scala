@@ -43,9 +43,11 @@ class TreeSum[T : Summable] {
       case None => Some {
         val parentNode = parentId.flatMap(k => nodeMap.get(k))
         val newNode = Node(t, parentNode)
-        nodeMap += (key -> newNode)
-        newNode.propagateUp { n =>
-          n.value = n.value plus newNode.value
+        this.synchronized {
+          nodeMap += (key -> newNode)
+          newNode.propagateUp { n =>
+            n.value = n.value plus newNode.value
+          }
         }
       }
     }
